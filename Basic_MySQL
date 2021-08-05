@@ -1,0 +1,67 @@
+desc employees;
+
+select * from employees; 
+-- data (날짜)를 알아보자
+
+select "2021-08-05";
+select current_date(); -- 현재날짜 표현 (함수)
+select current_date() + 3; -- x
+select adddate(current_date(), 30); -- o day를 +하는
+
+select adddate(current_date(), interval 30 day);
+select adddate(current_date(), interval 1 week);
+select adddate(current_date(), interval 1 month);
+select adddate(current_date(), interval 1 year);
+
+-- 87-08-20
+select * from employees where HIRE_DATE = "1987-08-20";
+-- 87년 8월달에 고용된 모든 직원
+select * from employees where HIRE_DATE like "1987-08%";
+select * from employees where HIRE_DATE between "1987-08-01" and "1987-08-31";
+
+-- 1987년 7월 이전에 채용된 직원
+select * from employees where HIRE_DATE < '1987-07-01';
+
+-- 17일에 채용된 직원
+select * from employees where HIRE_DATE like '%17';
+select * from employees where day(hire_date) = 17;
+
+select month(current_date()); -- 달만 
+select year(current_date()); -- 년만
+
+select adddate(current_date(), -1);
+select date_add(current_date(), interval 30 day); -- 불편함 잘안씀
+select subdate(current_date(), 30);
+
+select "11:00:33"; -- 시간
+select current_time(); --- 현재시간
+select current_time() + interval 10 minute; -- second, hour
+select addtime(current_time(), 30); -- 기본값 초
+select adddata(current_time(), interval 30 minute); -- 분
+select minute(current_time());
+
+
+select current_timestamp(); -- 현재 날짜와 시간을 표현
+
+select datediff(current_date(), '2021-01-01');
+select timediff(current_time(), '16:00:00'); -- 분초
+
+-- job_history 조회
+-- 일한 기간 구하기
+select EMPLOYEE_ID, datediff(end_date, start_date) from job_history;
+
+-- 숫자 타입
+-- TINYINT, SMALLINT , MEDIUMINT, INT, BIGINT (정수)
+-- float, DOUBLE (실수, 부동소수점)
+-- DECIMAL, NUMERIC (정수, 실수, 고정소수점)
+
+-- 문자
+-- CHAR 고정 길이 문자
+-- VARCHAR 가변 길이 문자
+-- TEXT
+-- CHAR(5)
+
+-- 시간
+-- DATE
+-- TIME
+-- DATETIME, TIMESTAMP
