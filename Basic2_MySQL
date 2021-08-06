@@ -1,0 +1,51 @@
+CREATE DATABASE my_db default character set utf8mb4; -- sql 에서 사용하는 uft8을 사용할수있게하는 명령어
+
+use my_db;
+
+drop table person;
+
+create table person (
+	id int primary key auto_increment, -- 무조건 값이 있어야함.  PK. 중복x
+	name varchar(20), -- 컬럼의 이름 컬럼의 데이터파이 최대가 20장인 가변 길이
+    age int --
+);
+
+desc person;
+select * from person;
+select * from person where id = 1;
+
+insert into person (name, age) values ("준석", 18);
+
+insert into person (name, age) values ("준석이",20), ("정이니",20);
+
+-- delete from person;
+
+/*
+	책 정보를 저장할 수 있는 테이블을 생성해보세요.
+    책은 제목, 가격 등이 있습니다.
+*/
+create table book (
+id int primary key auto_increment,
+	author varchar(20), 
+	title varchar(20) unique, -- 제목이 유일해야함.
+    price int --
+);
+drop table book;
+delete from book;
+select * from book;
+desc book;
+
+
+insert into book (author,title, price) values ("윤동주","별헤는밤",12000), ("베르나르 베르베르","개미", 15000);
+
+update book set price = 20000; -- 전체변경
+
+update book set price = 20000 -- 부분변경
+where id = 1;
+
+delete from book
+where id = 1; -- 부분 삭제
+-- gui에서 생성하면 삭제된 다음 pk값이 만들어진다.
+-- 한번 쓴 번호는 다시 안만들어진다.
+
+
