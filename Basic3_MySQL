@@ -1,0 +1,25 @@
+/*
+테이블 직업
+아이디 int pk ai
+이름 문자열
+연봉 int
+*/
+
+create table jobs(
+	id int primary key auto_increment -- pk = notnull 기본값 , 중복x
+    , title varchar(45) not null -- 널값이 허용되지 않음.
+    , salary int default 2400 -- 기본값으로 2400의 값이 들어감 -- null 해도안해도 상관x
+);
+
+desc jobs;
+insert into jobs (title) values ("paladin");
+insert into jobs (title,salary) values ("priest",3000); -- null 값을 허용하지않음.
+select * from jobs;
+
+--
+desc book;
+alter table book modify title varchar(45) not null;
+alter table book modify price int default 10000;
+alter table book add column writer varchar(20) default "작자 미상";
+alter table book change column writer bookwriter varchar(20);
+alter table book drop column bookwriter;
