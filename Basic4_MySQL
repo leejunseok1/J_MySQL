@@ -1,0 +1,32 @@
+/*
+	테이블직원
+    아이디 기본키
+    first 이름
+    last 이름
+    이메일 
+    전화번호
+    생일
+    직책
+    부서
+*/
+
+create table employee(
+	id int primary key auto_increment,
+    firstname varchar(10) not null,
+    lastname varchar(10) not null,
+    email varchar(30),
+    phone varchar(20),
+    birthday varchar(20), -- date not null
+    position varchar(20),
+    department varchar(20)
+);
+
+insert into employee (firstname, lastname, email, phone, birthday, position, department)
+values ("브루스", "웨인" , "batman@dc.com" , "010-555-5555", "1987-04-17","회장",null),
+("클락", "켄트", "superman@dc.com", "010-123-4567", "1954-09-01","과장","마케팅");
+
+desc employee;
+select * from employee;
+delete from employee;
+drop table employee;
+alter table book drop column bookwriter;
