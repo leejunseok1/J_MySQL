@@ -1,0 +1,144 @@
+/*
+	직원 전체 평균 SALARY보다 높은 SALARY를 받는 직원들의 Full Name (FIRST_NAME + LAST_NAME)과 SALARY
+*/
+SELECT CONCAT(FIRST_NAME, " ", LAST_NAME) AS FullName, SALARY
+FROM employees
+WHERE SALARY > (SELECT AVG(SALARY) FROM employees);
+
+/*
+	직원들 중 최소 SALARY와 같은 SALARY를 받고 있는 직원들의 EMAIL과 SALARY
+*/
+SELECT EMAIL, SALARY FROM employees WHERE SALARY = (SELECT MIN(SALARY) FROM employees);
+
+/*
+	직원들의 JOB_ID를 중복제거하고 조회해봅시다.
+*/
+SELECT DISTINCT JOB_ID FROM employees;
+
+/*
+	직원 first_name, last_name, salary, 소득세 (6%, 소수점 1자리 반올림) 조회해봅시다.
+*/
+SELECT FIRST_NAME, LAST_NAME, SALARY, ROUND(SALARY * 0.06, 1) FROM employees;
+
+/*
+	직원들 이름, 커미션(연봉 * 커미션 퍼센트) 0 초과.
+*/
+SELECT FIRST_NAME, LAST_NAME, SALARY * COMMISSION_PCT AS COMMISION
+FROM employees
+WHERE COMMISSION_PCT > 0;
+
+SELECT * FROM
+	(SELECT FIRST_NAME, LAST_NAME, SALARY * COMMISSION_PCT AS COMMISION
+	FROM employees) AS A
+WHERE COMMISION > 0;
+
+/*
+	FIRST_NAME 에 'b' 나 'c'를 포함하는 직원들의 FIRST_NAME.
+*/
+SELECT FIRST_NAME FROM employees
+WHERE FIRST_NAME LIKE '%b%'
+	OR FIRST_NAME LIKE '%c%';
+    
+/*
+	LAST_NAME이 6글자인 직원
+*/
+SELECT LAST_NAME FROM employees
+WHERE LAST_NAME LIKE '______';
+
+SELECT LAST_NAME FROM employees
+WHERE CHAR_LENGTH(LAST_NAME) = 6;
+
+/*
+	연봉이 10000 ~ 15000 범위 밖의 직원들
+*/
+SELECT LAST_NAME, SALARY FROM employees
+WHERE NOT (SALARY >= 10000 AND SALARY <= 15000);
+
+SELECT LAST_NAME, SALARY FROM employees
+WHERE SALARY NOT BETWEEN 10000 AND 15000;
+
+/*
+	DEPARTMENT_ID 가 30이거나 100인 직원
+*/
+SELECT LAST_NAME, DEPARTMENT_ID FROM employees
+WHERE DEPARTMENT_ID = 30 OR DEPARTMENT_ID = 100;
+
+SELECT LAST_NAME, DEPARTMENT_ID FROM employees
+WHERE DEPARTMENT_ID IN (30, 100);
+
+-- departments 부서 이름이 IT로 시작하는 부서 ID
+SELECT DEPARTMENT_ID FROM departments
+WHERE DEPARTMENT_NAME LIKE 'IT%';
+
+-- IT 관련 부서에서 일하는 직원
+SELECT LAST_NAME, DEPARTMENT_ID FROM employees
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID FROM departments
+							WHERE DEPARTMENT_NAME LIKE 'IT%');
+                            
+-- 직원 최대 연봉과 최소 연봉의 차를 구해봅시다.
+SELECT MAX(SALARY) - MIN(SALARY) AS Gap FROM employees;
+
+-- 부서ID별 직원 수, 직원 평균 연봉
+SELECT DEPARTMENT_ID, COUNT(*), ROUND(AVG(SALARY), 1) FROM employees
+GROUP BY DEPARTMENT_ID;
+
+-- 부서에 소속된 직원이 10명이상인 부서의 최고 연봉?
+SELECT DEPARTMENT_ID, MAX(SALARY) FROM employees
+GROUP BY DEPARTMENT_ID
+HAVING COUNT(*) > 10;
+
+/*
+	직원들 연봉 5번째의 연봉을 받고 있는 직원 목록
+*/
+SELECT DISTINCT SALARY
+FROM employees
+ORDER BY SALARY
+LIMIT 1 OFFSET 4;
+
+SELECT LAST_NAME, SALARY FROM employees WHERE SALARY = (SELECT DISTINCT SALARY
+														FROM employees
+														ORDER BY SALARY
+														LIMIT 1 OFFSET 4);
+                                                        
+SELECT * FROM employees WHERE LAST_NAME = 'BULL';
+SELECT LAST_NAME, SALARY FROM employees WHERE SALARY > (SELECT SALARY
+														FROM employees WHERE LAST_NAME = 'BULL');
+                                                        
+/*
+	연봉 상위 10명(연봉이 동일하면 LAST_NAME 오름차순)을 연봉의 오름차순으로 정렬해서 조회하시오
+*/
+SELECT * FROM
+	(SELECT LAST_NAME, SALARY FROM employees ORDER BY SALARY DESC, LAST_NAME LIMIT 10) AS A
+ORDER BY SALARY;
+
+/*
+	locations 라는 테이블을 모든열 조회해보세요~
+    COUNTRY_ID 가 'US'인 행만.
+*/
+SELECT * FROM locations WHERE COUNTRY_ID = 'US';
+/*
+	departments 테이블 모든 열 조회.
+    장소가 'US'인 부서들만
+*/
+SELECT * FROM departments
+WHERE LOCATION_ID IN (SELECT LOCATION_ID FROM locations WHERE COUNTRY_ID = 'US');
+/*
+	미국에 있는 부서에서 일하는 직원
+*/
+SELECT * FROM employees
+WHERE DEPARTMENT_ID IN (SELECT DEPARTMENT_ID
+							FROM departments
+							WHERE LOCATION_ID IN (SELECT LOCATION_ID
+													FROM locations
+													WHERE COUNTRY_ID = 'US'));
+                                                    
+/*
+	직원의 매니저가 'Steven King'인 직원들 목록
+*/
+SELECT * FROM employees
+WHERE MANAGER_ID = (SELECT EMPLOYEE_ID FROM employees
+					WHERE FIRST_NAME = "Steven" AND LAST_NAME = "KING");
+/*
+	직원들 전화번호를 한국식 ('.' -> '-')으로 조회해보세요.
+*/
+SELECT REPLACE(PHONE_NUMBER, ".", "-") AS NEW_PHONE FROM employees;
