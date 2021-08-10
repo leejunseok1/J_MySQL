@@ -1,0 +1,75 @@
+/*
+	hr 데이터베이스
+	1. Douglas Grant의 PHONE_NUMBER 값을 NULL로 변경하기
+    2. 같은 JOB_ID를 가지는 직원이 10명이상일 경우 jobs 테이블의 MAX_SALARY 값을 1000 증가
+    3. 연봉이 2200인 직원들의 SALARY 값을 1.5배로 인상
+    --
+    4. department 테이블의 DEPARTMENT_NAME과 각 부서의 관리자 Full Name도 같이 조회
+    5. employee 테이블의 직원들 중 직원들 부서명이 ~ing으로 끝나는 부서의 직원들 Full Name 조회 (55 rows)
+    6. 같은 부서에서 일학는 직원 평균 salary보다 높은 임금을 받는 직원들의 Full Name과 SALARY
+															, JOB_NAME, DEPARTMENT_NAME 조회
+*/
+SELECT * FROM employees
+WHERE FIRST_NAME = 'Douglas' AND LAST_NAME = 'Grant';
+
+UPDATE employees
+SET PHONE_NUMBER = NULL
+WHERE FIRST_NAME = 'Douglas' AND LAST_NAME = 'Grant';
+
+SELECT JOB_ID, COUNT(*) FROM employees
+GROUP BY JOB_ID;
+
+SELECT JOB_ID FROM employees
+GROUP BY JOB_ID
+HAVING COUNT(*) >= 10;
+
+SELECT * FROM jobs
+WHERE JOB_ID IN (SELECT JOB_ID FROM employees
+							GROUP BY JOB_ID
+							HAVING COUNT(*) >= 10);
+                            
+UPDATE jobs
+SET MAX_SALARY = MAX_SALARY + 1000
+WHERE JOB_ID IN (SELECT JOB_ID FROM employees
+							GROUP BY JOB_ID
+							HAVING COUNT(*) >= 10);
+                            
+SELECT * FROM employees WHERE SALARY = 2200 * 1.5;
+UPDATE employees
+SET SALARY = SALARY * 1.5
+WHERE SALARY = 2200;
+
+-- 4. department 테이블의 DEPARTMENT_NAME과 각 부서의 관리자 Full Name도 같이 조회
+
+SELECT DEPARTMENT_NAME, A.MANAGER_ID, FIRST_NAME, LAST_NAME FROM departments AS A
+LEFT JOIN employees AS B ON A.MANAGER_ID = B.EMPLOYEE_ID;
+
+SELECT DEPARTMENT_NAME, B.MANAGER_ID, FIRST_NAME, LAST_NAME FROM employees AS A
+RIGHT JOIN departments AS B ON A.EMPLOYEE_ID = B.MANAGER_ID;
+
+-- 5. employee 테이블의 직원들 중 직원들 부서명이 ~ing으로 끝나는 부서의 직원들 Full Name 조회 (55 rows)
+SELECT DEPARTMENT_NAME, FIRST_NAME, LAST_NAME
+FROM employees AS A
+JOIN departments AS B ON B.department_name LIKE '%ing' AND A.department_id = B.department_id;
+
+SELECT B.DEPARTMENT_NAME, FIRST_NAME, LAST_NAME
+FROM employees AS A
+JOIN (SELECT DEPARTMENT_ID, DEPARTMENT_NAME
+		FROM departments
+		WHERE department_name LIKE '%ing') AS B
+	ON A.department_id = B.department_id;
+    
+SELECT * FROM employees;
+SELECT * FROM departments;
+
+-- 6. 같은 부서에서 일학는 직원 평균 salary보다 높은 임금을 받는 직원들의 Full Name과 SALARY
+--															, JOB_TITLE, DEPARTMENT_NAME 조회
+                                                            
+SELECT DEPARTMENT_ID, AVG(SALARY)
+FROM employees AS A
+GROUP BY DEPARTMENT_ID;
+
+SELECT FIRST_NAME, LAST_NAME, SALARY, JOB_TITLE, DEPARTMENT_NAME
+FROM employees AS A
+LEFT JOIN jobs AS B ON A.job_id = B.job_id
+LEFT JOIN departments AS C ON A.DEPARTMENT_ID = C.DEPARTMENT_ID;
