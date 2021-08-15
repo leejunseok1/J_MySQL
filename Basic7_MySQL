@@ -1,0 +1,49 @@
+CREATE DATABASE opentutorials;
+
+-- DROP DATABASE opentutorials
+
+SHOW DATABASES;
+
+USE opentutorials;
+
+CREATE TABLE topic(
+id INT(11) NOT NULL auto_increment,
+title VARCHAR(100) NOT NULL,
+description TEXT NULL,
+created DATETIME NOT NULL,
+author VARCHAR(30) NULL,
+profile VARCHAR(100) NULL,
+PRIMARY KEY(id)
+);
+
+desc topic;
+
+SHOW TABLES;
+
+INSERT INTO topic (title, description,created, author,profile) 
+VALUES('MySQL','MySQL is ...',NOW(),'egoing','developer');
+
+INSERT INTO topic (title, description,created, author,profile) 
+VALUES('ORACLE','ORACLE IS...',NOW(),'egoing','developer');
+
+INSERT INTO topic (title, description,created, author,profile) 
+VALUES('JUNSEOK','JUNSEOK IS...',NOW(),'JUNSEOK','developer');
+
+INSERT INTO topic (title, description,created, author,profile) 
+VALUES('JEONGIN','JEONGIN IS...',NOW(),'JEONGIN','developer');
+
+INSERT INTO topic (title, description,created, author,profile) 
+VALUES('MINSEOK','MINSEOK IS...',NOW(),'MINSEOK','developer');
+
+SELECT id,title,created,author
+FROM topic
+WHERE author = 'egoing'
+ORDER BY id DESC
+LIMIT 1;
+
+SELECT * FROM topic;
+
+UPDATE topic SET description = 'Oracle is...',
+title = 'ORACLE' WHERE id = 2;
+
+-- where문을 빠뜨리면 재앙이 온다~
